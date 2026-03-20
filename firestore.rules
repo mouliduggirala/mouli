@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "mouliduggirala02@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    // Visitor Stats
+    match /stats/visitors {
+      // Allow anyone to read the visitor count
+      allow read: if true;
+      
+      // Allow anyone to increment the count
+      // We check that only 'count' is being updated and it's an increment
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt']) &&
+                      request.resource.data.count == resource.data.count + 1;
+      
+      // Allow initial creation (only once)
+      allow create: if !exists(/databases/$(database)/documents/stats/visitors) &&
+                      request.resource.data.count == 1;
+      
+      // Allow admin to reset or modify
+      allow delete: if isAdmin();
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

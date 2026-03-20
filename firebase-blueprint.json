@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "VisitorStats": {
+      "title": "Visitor Stats",
+      "description": "Tracks the number of visitors to the portfolio.",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "number",
+          "description": "Total number of visits."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last time the count was updated."
+        }
+      },
+      "required": ["count", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/stats/visitors": {
+      "schema": "VisitorStats",
+      "description": "Document tracking the total visitor count."
+    }
+  }
+}
