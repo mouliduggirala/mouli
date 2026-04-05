@@ -33,8 +33,11 @@ import {
   MessageSquare,
   GitBranch,
   Cpu,
-  ArrowUp
+  ArrowUp,
+  Menu,
+  X
 } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import Chatbot from "./Chatbot";
 import { db } from "../firebase";
@@ -163,6 +166,7 @@ const useVisitorCount = () => {
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Ensure dark mode is removed
@@ -174,7 +178,7 @@ const Navbar = () => {
 
       // Simple active section detection
       const sections = ['about', 'skills', 'projects', 'experience', 'journey', 'contact'];
-      const scrollPosition = window.scrollY + 100;
+      const scrollPosition = window.scrollY + 120;
 
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -193,6 +197,24 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToSection = (id: string) => {
+    setIsMenuOpen(false);
+    // Small delay to allow menu to start closing animation
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        const offset = 100;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
 
   const navItems = [
     { name: 'About', id: 'about' },
@@ -215,17 +237,21 @@ const Navbar = () => {
           animate={{ opacity: 1, x: 0 }}
           whileHover={{ scale: 1.05 }}
           className="cursor-pointer"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setIsMenuOpen(false);
+          }}
         >
           <Logo />
         </motion.div>
         
         <div className="flex items-center gap-8">
+          {/* Desktop Nav */}
           <div className="hidden md:flex gap-1 text-sm font-medium">
             {navItems.map((item) => (
-              <a 
+              <button 
                 key={item.id} 
-                href={`#${item.id}`} 
+                onClick={() => scrollToSection(item.id)}
                 className={`relative px-4 py-2 rounded-full transition-colors ${
                   activeSection === item.id 
                     ? "text-accent" 
@@ -240,11 +266,52 @@ const Navbar = () => {
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
-              </a>
+              </button>
             ))}
           </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-3 -mr-2 text-slate-600 hover:text-accent transition-colors relative z-[60]"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Nav Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden bg-white/98 backdrop-blur-2xl border-t border-slate-100 rounded-b-2xl shadow-xl"
+          >
+            <div className="flex flex-col p-4 gap-2">
+              {navItems.map((item) => (
+                <button 
+                  key={item.id} 
+                  onClick={() => scrollToSection(item.id)}
+                  className={`px-4 py-4 rounded-xl text-sm font-bold transition-all text-left flex items-center justify-between group ${
+                    activeSection === item.id 
+                      ? "bg-accent/10 text-accent" 
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {item.name}
+                  <ChevronRight size={14} className={`transition-transform ${activeSection === item.id ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
@@ -253,7 +320,7 @@ const Hero = () => {
   const visitorCount = useVisitorCount();
 
   return (
-    <section className="section-padding pt-40 min-h-screen flex flex-col justify-center relative overflow-hidden">
+    <section className="section-padding pt-64 min-h-screen flex flex-col justify-center relative overflow-hidden">
       {/* Background Orbs */}
       <div className="absolute top-1/4 -left-20 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-700" />
@@ -982,7 +1049,12 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8 items-center">
           <div className="text-left">
-            <Logo />
+            <div 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="cursor-pointer w-fit hover:scale-105 transition-transform"
+            >
+              <Logo />
+            </div>
             <p className="mt-4 text-sm text-slate-400 max-w-xs">
               Building intelligent software systems with a focus on AI and Java technologies.
             </p>
@@ -1044,7 +1116,7 @@ const AcademicJourney = () => {
     },
     {
       year: "2024",
-      title: "Project Leadership",
+      title: "Project Member",
       institution: "VRSEC",
       desc: "Led the Coastal Erosion Monitoring project and achieved a significant milestone in competitive programming."
     },

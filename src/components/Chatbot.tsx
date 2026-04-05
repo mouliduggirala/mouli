@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Send, Loader2 } from "lucide-react";
+import { X, Send, Loader2, MessageSquare } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -212,9 +212,40 @@ const Chatbot = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-white text-primary w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-black/10 border border-slate-100 hover:bg-slate-50 transition-all"
+        className="bg-white text-primary w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-black/10 border border-slate-100 hover:bg-slate-50 transition-all relative group"
       >
-        {isOpen ? <X size={24} /> : <LogoIcon />}
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.div
+              key="close"
+              initial={{ opacity: 0, rotate: -90 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <X size={24} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="chat"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <LogoIcon />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        {/* Tooltip */}
+        {!isOpen && (
+          <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-xl text-[10px] font-bold text-primary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            Chat with AI Assistant
+            <div className="absolute top-1/2 -right-1 -translate-y-1/2 border-4 border-transparent border-l-white" />
+          </div>
+        )}
       </motion.button>
     </div>
   );
