@@ -11,7 +11,7 @@ const LogoIcon = ({ size = "sm" }: { size?: "sm" | "md" }) => {
   const isSm = size === "sm";
   return (
     <div className="flex items-center -space-x-2">
-      <div className={`${isSm ? 'w-7 h-7 text-[10px]' : 'w-9 h-9 text-xs'} bg-white rounded-lg flex items-center justify-center text-primary font-bold shadow-sm border border-white/20`}>
+      <div className={`${isSm ? 'w-7 h-7 text-[10px]' : 'w-9 h-9 text-xs'} bg-primary rounded-lg flex items-center justify-center text-white font-bold shadow-sm`}>
         D
       </div>
       <div className={`${isSm ? 'w-7 h-7 text-[10px]' : 'w-9 h-9 text-xs'} bg-accent rounded-lg flex items-center justify-center text-white font-bold shadow-sm`}>
@@ -102,12 +102,12 @@ const Chatbot = () => {
       if (data.error) {
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: "Sorry, I'm having some trouble right now. Please try again later." },
+          { role: "assistant", content: `Error: ${data.error}` },
         ]);
       } else {
         setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat Error:", error);
       setMessages((prev) => [
         ...prev,
@@ -212,7 +212,7 @@ const Chatbot = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all"
+        className="bg-white text-primary w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-black/10 border border-slate-100 hover:bg-slate-50 transition-all"
       >
         {isOpen ? <X size={24} /> : <LogoIcon />}
       </motion.button>

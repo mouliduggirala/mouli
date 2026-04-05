@@ -32,7 +32,8 @@ import {
   Brain,
   MessageSquare,
   GitBranch,
-  Cpu
+  Cpu,
+  ArrowUp
 } from "lucide-react";
 import { toast } from "react-toastify";
 import Chatbot from "./Chatbot";
@@ -325,7 +326,7 @@ const About = () => {
             <User className="text-accent" /> About Me
           </h2>
           <p className="text-muted mb-6 text-lg">
-            I am a dedicated B.Tech CSE student (2022-2026) at VR Siddhartha Engineering College, passionate about competitive programming and full-stack development.
+            I am a B.Tech CSE student (2022-2026) at VR Siddhartha Engineering College, passionate about competitive programming and full-stack development.
           </p>
           <p className="text-muted mb-8">
             From building an AI Health Assistant to a highly scalable Java Job Portal, I strive to create robust applications. I'm actively engaged in competitive programming, having solved over 600 DSA problems on LeetCode.
@@ -708,7 +709,7 @@ const Experience = () => {
 
   const academicExperience = [
     {
-      role: "Project Lead",
+      role: "Project Member",
       context: "Coastal Erosion Monitoring System",
       date: "2024 - 2025",
       desc: "Led a team of 4 to develop an automated shoreline detection system using satellite imagery and machine learning."
@@ -1006,6 +1007,13 @@ const Footer = () => {
           </div>
 
           <div className="md:text-right flex flex-col md:items-end gap-2">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-accent hover:text-white text-slate-600 rounded-full text-xs font-bold w-fit transition-all mb-2"
+            >
+              <ArrowUp size={14} />
+              <span>Move to top</span>
+            </button>
             <div className="flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold w-fit">
               <Activity size={14} />
               <span><Counter value={visitorCount} /> Profile Viewers</span>
@@ -1097,6 +1105,14 @@ const AcademicJourney = () => {
 
 const Certifications = () => {
   const certifications = [
+    { title: "Design, Technology and Innovation", issuer: "NPTEL", link: "#" },
+    { title: "Foundations of R Software", issuer: "NPTEL", link: "#" },
+    { title: "Industry 4.0 & Industrial IoT", issuer: "NPTEL", link: "#" },
+    { title: "Programming in Modern C++", issuer: "NPTEL", link: "#" },
+    { title: "Communication Skill Certification", issuer: "TCS", link: "#" },
+    { title: "Ethical Hacker", issuer: "Cisco", link: "#" },
+    { title: "Microsoft AI Azure Essential", issuer: "LinkedIn", link: "#" },
+    { title: "Python For Data Analysis", issuer: "Udemy", link: "#" },
     { title: "Prompt Engineering Foundation", issuer: "AWS", link: "https://drive.google.com/drive/folders/your-id" },
     { title: "Cloud Fundamentals", issuer: "AWS", link: "https://drive.google.com/drive/folders/your-id" },
     { title: "Design Thinking", issuer: "DotSphere", link: "https://drive.google.com/drive/folders/your-id" },
@@ -1106,7 +1122,7 @@ const Certifications = () => {
 
   return (
     <section id="certifications" className="section-padding bg-slate-50">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1115,14 +1131,14 @@ const Certifications = () => {
           <h2 className="heading-lg mb-8 flex items-center gap-3">
             <Award className="text-accent" /> Certifications
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {certifications.map((cert, i) => (
               <motion.div
-                key={cert.title}
+                key={cert.title + i}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.05 }}
                 className="flex items-center justify-between p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:border-accent/30 transition-all group"
               >
                 <div className="flex items-center gap-4">
@@ -1130,14 +1146,14 @@ const Certifications = () => {
                     <Award className="text-accent" size={20} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm">{cert.title}</h4>
-                    <p className="text-xs text-muted">{cert.issuer}</p>
+                    <h4 className="font-bold text-[13px] leading-tight mb-1">{cert.title}</h4>
+                    <p className="text-[11px] text-muted font-medium">{cert.issuer}</p>
                   </div>
                 </div>
                 <a 
                   href={cert.link} 
                   target="_blank" 
-                  className="p-2 rounded-lg bg-slate-50 text-slate-400 hover:bg-accent hover:text-white transition-all"
+                  className="p-2 rounded-lg bg-slate-50 text-slate-400 hover:bg-accent hover:text-white transition-all shrink-0 ml-2"
                 >
                   <ExternalLink size={16} />
                 </a>

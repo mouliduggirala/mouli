@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
-import { Groq } from "groq-sdk";
+import Groq from "groq-sdk";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -39,8 +39,8 @@ Mouli's Profile:
 
 STRICT RULES:
 1. ONLY answer questions related to the information provided above.
-2. If a user asks ANYTHING ELSE (e.g., general knowledge, coding help not related to Mouli's projects, personal advice, jokes, etc.), you MUST politely refuse and state that you are only authorized to discuss Mouli's professional profile.
-3. Example refusal: "I'm sorry, but I can only provide information regarding Mouli's professional profile, skills, and projects. How can I help you with those?"
+2. If a user asks ANYTHING ELSE (e.g., general knowledge, coding help not related to Mouli's projects, personal advice, jokes, etc.), you MUST politely refuse and state that you are only authorized to discuss Mouli's professional profile. DO NOT answer any questions that are not about Mouli.
+3. Example refusal: "I'm sorry, but I can only provide information regarding Mouli's professional profile, skills, and projects. I am not authorized to answer other questions. How can I help you with Mouli's profile?"
 4. Do not provide any information that is not in the profile above.
 5. Keep responses short and professional.
 `;
@@ -54,27 +54,37 @@ STRICT RULES:
       return res.status(500).json({ error: "Groq API key not configured. Please add GROQ_API_KEY in Settings > Secrets." });
     }
 
-    // Log masked key for debugging (safe)
     const trimmedKey = apiKey.trim();
-    const maskedKey = trimmedKey.length > 8 
-      ? `${trimmedKey.substring(0, 4)}...${trimmedKey.substring(trimmedKey.length - 4)}`
-      : "***";
-    console.log(`Attempting Groq API call with key: ${maskedKey} (length: ${trimmedKey.length})`);
-
+    
     try {
       const groq = new Groq({
         apiKey: trimmedKey,
       });
 
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages,
-        ],
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.7,
-        max_tokens: 1024,
-      });
+      // Try llama-3.3-70b-versatile first, then fallback to llama-3.1-70b-versatile
+      let chatCompletion;
+      try {
+        chatCompletion = await groq.chat.completions.create({
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...messages,
+          ],
+          model: "llama-3.3-70b-versatile",
+          temperature: 0.7,
+          max_tokens: 1024,
+        });
+      } catch (e: any) {
+        console.warn("Primary model failed, trying fallback:", e.message);
+        chatCompletion = await groq.chat.completions.create({
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...messages,
+          ],
+          model: "llama-3.1-70b-versatile",
+          temperature: 0.7,
+          max_tokens: 1024,
+        });
+      }
 
       res.json({ message: chatCompletion.choices[0]?.message?.content || "" });
     } catch (error: any) {
@@ -87,7 +97,7 @@ STRICT RULES:
         });
       }
       
-      res.status(500).json({ error: "Failed to get response from AI." });
+      res.status(500).json({ error: error.message || "Failed to get response from AI." });
     }
   });
 
