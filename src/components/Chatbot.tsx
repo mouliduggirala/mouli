@@ -1,16 +1,31 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageSquare, X, Send, User, Bot, Loader2 } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+const LogoIcon = ({ size = "sm" }: { size?: "sm" | "md" }) => {
+  const isSm = size === "sm";
+  return (
+    <div className="flex items-center -space-x-2">
+      <div className={`${isSm ? 'w-7 h-7 text-[10px]' : 'w-9 h-9 text-xs'} bg-white rounded-lg flex items-center justify-center text-primary font-bold shadow-sm border border-white/20`}>
+        D
+      </div>
+      <div className={`${isSm ? 'w-7 h-7 text-[10px]' : 'w-9 h-9 text-xs'} bg-accent rounded-lg flex items-center justify-center text-white font-bold shadow-sm`}>
+        M
+      </div>
+    </div>
+  );
+};
+
 const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLeadCaptured, setIsLeadCaptured] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hi! I'm Mouli's AI assistant. How can I help you today?" },
+    { role: "assistant", content: "Hello! I'm Mouli's AI assistant. Before we begin, could you please provide your email address so Mouli can get back to you?" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +39,53 @@ const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const captureLead = async (email: string) => {
+    try {
+      await fetch('https://formspree.io/f/xaqpvdyk', {
+        method: 'POST',
+        body: JSON.stringify({ email, message: "New Chatbot Lead" }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error("Lead capture error:", error);
+    }
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input;
     setInput("");
-    setIsLoading(true);
 
+    if (!isLeadCaptured) {
+      if (isValidEmail(currentInput)) {
+        setIsLoading(true);
+        await captureLead(currentInput);
+        setIsLeadCaptured(true);
+        setIsLoading(false);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Thank you! I've shared your email with Mouli. Now, how can I help you with information about his profile, skills, or projects?" }
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "That doesn't look like a valid email. Please provide a valid email address to continue." }
+        ]);
+      }
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -68,54 +122,61 @@ const Chatbot = () => {
     <div className="fixed bottom-6 right-6 z-[100]">
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+            <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="bg-white rounded-3xl shadow-2xl border border-slate-100 w-[350px] md:w-[400px] h-[500px] flex flex-col overflow-hidden mb-4"
+            className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 w-[320px] md:w-[340px] h-[450px] flex flex-col overflow-hidden mb-4"
           >
             {/* Header */}
-            <div className="bg-primary p-4 flex items-center justify-between text-white">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Bot size={20} />
-                </div>
+            <div className="bg-gradient-to-br from-primary via-primary to-slate-800 p-4 flex items-center justify-between text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/20 rounded-full blur-2xl -mr-16 -mt-16" />
+              <div className="flex items-center gap-3 relative z-10">
+                <LogoIcon size="md" />
                 <div>
-                  <h3 className="font-bold text-sm">Mouli's Assistant</h3>
-                  <p className="text-[10px] text-white/70">Online & Ready to Help</p>
+                  <h3 className="font-bold text-xs">Mouli's Assistant</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                    <p className="text-[9px] text-white/70">Online & Ready to Help</p>
+                  </div>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                className="p-1.5 hover:bg-white/10 rounded-full transition-colors relative z-10"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50">
+            <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50/50">
               {messages.map((m, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, x: m.role === "user" ? 10 : -10 }}
+                  animate={{ opacity: 1, x: 0 }}
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                    className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
                       m.role === "user"
-                        ? "bg-primary text-white rounded-tr-none"
+                        ? "bg-primary text-white rounded-tr-none shadow-md shadow-primary/10"
                         : "bg-white text-slate-700 border border-slate-100 rounded-tl-none shadow-sm"
                     }`}
                   >
                     {m.content}
                   </div>
-                </div>
+                </motion.div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white text-slate-700 border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
-                    <Loader2 size={16} className="animate-spin text-accent" />
-                    <span className="text-xs">Thinking...</span>
+                    <div className="flex gap-1">
+                      <span className="w-1 h-1 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-1 h-1 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1 h-1 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
                   </div>
                 </div>
               )}
@@ -124,21 +185,21 @@ const Chatbot = () => {
 
             {/* Input */}
             <div className="p-4 bg-white border-t border-slate-100">
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center bg-slate-50 rounded-2xl px-3 py-1.5 border border-slate-100 focus-within:border-accent/30 transition-all">
                 <input
-                  type="text"
+                  type={!isLeadCaptured ? "email" : "text"}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Ask me anything..."
-                  className="flex-grow bg-slate-50 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-accent outline-none"
+                  placeholder={!isLeadCaptured ? "Enter email..." : "Ask me anything..."}
+                  className="flex-grow bg-transparent border-none text-xs focus:ring-0 outline-none py-1"
                 />
                 <button
                   onClick={handleSend}
                   disabled={isLoading || !input.trim()}
-                  className="bg-primary text-white p-2 rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50"
+                  className="bg-primary text-white p-1.5 rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/10"
                 >
-                  <Send size={18} />
+                  <Send size={14} />
                 </button>
               </div>
             </div>
@@ -153,7 +214,7 @@ const Chatbot = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all"
       >
-        {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+        {isOpen ? <X size={24} /> : <LogoIcon />}
       </motion.button>
     </div>
   );

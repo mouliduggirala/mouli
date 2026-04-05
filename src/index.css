@@ -8,11 +8,17 @@
   --color-primary: #0f172a;
   --color-secondary: #64748b;
   --color-accent: #10b981;
+  
+  --color-muted: #64748b;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    cursor: pointer;
+  }
   body {
-    @apply font-sans bg-white text-primary antialiased;
+    @apply font-sans bg-white text-primary antialiased transition-colors duration-300;
   }
 }
 
@@ -33,5 +39,5 @@
 }
 
 .text-muted {
-  @apply text-secondary leading-relaxed;
+  @apply text-muted leading-relaxed;
 }

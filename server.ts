@@ -12,14 +12,9 @@ async function startServer() {
 
   app.use(express.json());
 
-  const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY || "",
-  });
-
   const SYSTEM_PROMPT = `
-You are a professional AI assistant for Duggirala Mouli, a B.Tech Computer Science student at VR Siddhartha Engineering College.
-Your goal is to answer questions about Mouli's profile, skills, projects, and availability for interviews.
-Act as a professional, helpful, and conversational assistant.
+You are a professional AI assistant for Duggirala Mouli.
+Your ONLY purpose is to answer questions about Mouli's profile, skills, projects, and professional background.
 
 Mouli's Profile:
 - Name: Duggirala Mouli
@@ -27,38 +22,50 @@ Mouli's Profile:
 - Role: AI & Java Full Stack Developer.
 - Skills: Java, Python, JavaScript, SQL, DSA, OOP, Spring Boot, REST APIs, ReactJS, Angular, Machine Learning, NLP, MySQL, Git, GitHub, Postman.
 - Key Projects:
-    1. Agentic AI HR Assistant: Built using LangGraph + Groq (LLaMA 3) for automated resume screening.
-    2. Coastal Erosion Monitoring: Automated system using CoastSat and satellite imagery (92% accuracy).
-    3. Java Job Portal: Scalable platform using Spring Boot and ReactJS.
-    4. EEG Emotion Recognition: BCI project using BioAmp hardware (80% accuracy).
+    1. Agentic AI HR Optimizer: Built using LangGraph + Groq (LLaMA 3) for automated resume screening and skill-gap analysis.
+    2. Shoreline Dynamics Monitor: Automated system using CoastSat and satellite imagery (92% accuracy).
+    3. Enterprise Job Connect Portal: Scalable platform using Spring Boot and ReactJS.
+    4. Neural Emotion Interpreter: BCI project using EEG signal processing (80% accuracy).
+    5. Vibrant Food Delivery Ecosystem: Full-stack delivery platform with real-time tracking.
 - Experience:
-    - AI Intern at Infosys SpringBoard (Jan 2026 - Present): NLP and ML forecasting.
+    - AI Intern at SkillDzire (Nov 2025 - April 2026): Engineered a Predictive Maintenance System using LSTM networks.
+    - AI Intern at Infosys SpringBoard (Aug 2025 - Sep 2025): NLP and ML forecasting.
     - Java Full Stack Intern at Eduskills (Jul 2025 - Aug 2025): Developed a job portal with JWT auth.
-- Academic Roles: Project Lead (Coastal Erosion), Core Member (Coding Club, VRSEC), Research Assistant (EEG Emotion Recognition).
+- Academic Roles: Project Lead (Coastal Erosion), Core Member (Coding Club, VRSEC), Project Lead (EEG Emotion Recognition).
 - Coding Stats: 1978+ total solved, 1089+ DSA (LeetCode, etc.), 711+ Competitive (CodeChef, CF).
 - Location: Vijayawada, Andhra Pradesh, India.
-- Contact: mouliduggirala02@gmail.com, +91 9154694401.
+- Contact: mouliduggirala02@gmail.com.
 - Availability: Looking for internship and full-time software engineering roles starting in 2026.
-- Resume: A downloadable PDF resume is available on the portfolio page.
 
-Guidelines:
-- Keep responses very short, concise, and professional.
-- If asked about the resume, mention that it can be downloaded directly from the portfolio page.
-- If asked about interview dates, mention that Mouli is available for interviews and suggest contacting him via email (mouliduggirala02@gmail.com) to schedule.
-- Keep responses professional but conversational.
-- If you don't know the answer, politely suggest contacting Mouli directly.
-- Do not mention that you are an AI assistant unless specifically asked.
-- Answer as if you are Mouli's personal assistant.
+STRICT RULES:
+1. ONLY answer questions related to the information provided above.
+2. If a user asks ANYTHING ELSE (e.g., general knowledge, coding help not related to Mouli's projects, personal advice, jokes, etc.), you MUST politely refuse and state that you are only authorized to discuss Mouli's professional profile.
+3. Example refusal: "I'm sorry, but I can only provide information regarding Mouli's professional profile, skills, and projects. How can I help you with those?"
+4. Do not provide any information that is not in the profile above.
+5. Keep responses short and professional.
 `;
 
   app.post("/api/chat", async (req, res) => {
     const { messages } = req.body;
+    const apiKey = process.env.GROQ_API_KEY;
 
-    if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({ error: "Groq API key not configured." });
+    if (!apiKey) {
+      console.error("GROQ_API_KEY is missing from environment variables.");
+      return res.status(500).json({ error: "Groq API key not configured. Please add GROQ_API_KEY in Settings > Secrets." });
     }
 
+    // Log masked key for debugging (safe)
+    const trimmedKey = apiKey.trim();
+    const maskedKey = trimmedKey.length > 8 
+      ? `${trimmedKey.substring(0, 4)}...${trimmedKey.substring(trimmedKey.length - 4)}`
+      : "***";
+    console.log(`Attempting Groq API call with key: ${maskedKey} (length: ${trimmedKey.length})`);
+
     try {
+      const groq = new Groq({
+        apiKey: trimmedKey,
+      });
+
       const chatCompletion = await groq.chat.completions.create({
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
@@ -70,8 +77,16 @@ Guidelines:
       });
 
       res.json({ message: chatCompletion.choices[0]?.message?.content || "" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Groq API Error:", error);
+      
+      if (error?.status === 401) {
+        return res.status(401).json({ 
+          error: "Invalid API Key. Please check your GROQ_API_KEY in Settings > Secrets.",
+          details: error.message 
+        });
+      }
+      
       res.status(500).json({ error: "Failed to get response from AI." });
     }
   });
