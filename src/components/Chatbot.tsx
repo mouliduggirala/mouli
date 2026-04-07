@@ -23,9 +23,9 @@ const LogoIcon = ({ size = "sm" }: { size?: "sm" | "md" }) => {
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLeadCaptured, setIsLeadCaptured] = useState(false);
+  const [isLeadCaptured, setIsLeadCaptured] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! I'm Mouli's AI assistant. Before we begin, could you please provide your email address so Mouli can get back to you?" },
+    { role: "assistant", content: "Hello! I'm Mouli's AI assistant. How can I help you with information about his profile, skills, or projects?" },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -66,25 +66,6 @@ const Chatbot = () => {
     const currentInput = input;
     setInput("");
 
-    if (!isLeadCaptured) {
-      if (isValidEmail(currentInput)) {
-        setIsLoading(true);
-        await captureLead(currentInput);
-        setIsLeadCaptured(true);
-        setIsLoading(false);
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: "Thank you! I've shared your email with Mouli. Now, how can I help you with information about his profile, skills, or projects?" }
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: "That doesn't look like a valid email. Please provide a valid email address to continue." }
-        ]);
-      }
-      return;
-    }
-
     setIsLoading(true);
     try {
       const response = await fetch("/api/chat", {
@@ -104,9 +85,10 @@ const Chatbot = () => {
           ...prev,
           { role: "assistant", content: `Error: ${data.error}` },
         ]);
-      } else {
+      } else if (data.message) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
       }
+      // If data.message is empty, it means the bot decided not to answer based on the prompt logic
     } catch (error: any) {
       console.error("Chat Error:", error);
       setMessages((prev) => [
@@ -187,11 +169,11 @@ const Chatbot = () => {
             <div className="p-4 bg-white border-t border-slate-100">
               <div className="flex gap-2 items-center bg-slate-50 rounded-2xl px-3 py-1.5 border border-slate-100 focus-within:border-accent/30 transition-all">
                 <input
-                  type={!isLeadCaptured ? "email" : "text"}
+                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder={!isLeadCaptured ? "Enter email..." : "Ask me anything..."}
+                  placeholder="Ask me anything..."
                   className="flex-grow bg-transparent border-none text-xs focus:ring-0 outline-none py-1"
                 />
                 <button

@@ -39,10 +39,9 @@ Mouli's Profile:
 
 STRICT RULES:
 1. ONLY answer questions related to the information provided above.
-2. If a user asks ANYTHING ELSE (e.g., general knowledge, coding help not related to Mouli's projects, personal advice, jokes, etc.), you MUST politely refuse and state that you are only authorized to discuss Mouli's professional profile. DO NOT answer any questions that are not about Mouli.
-3. Example refusal: "I'm sorry, but I can only provide information regarding Mouli's professional profile, skills, and projects. I am not authorized to answer other questions. How can I help you with Mouli's profile?"
-4. Do not provide any information that is not in the profile above.
-5. Keep responses short and professional.
+2. If a user asks ANYTHING ELSE (e.g., general knowledge, coding help not related to Mouli's projects, personal advice, jokes, etc.), you MUST return an EMPTY STRING. DO NOT provide any refusal message or explanation.
+3. Do not provide any information that is not in the profile above.
+4. Keep responses short and professional.
 `;
 
   app.post("/api/chat", async (req, res) => {

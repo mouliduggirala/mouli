@@ -340,37 +340,11 @@ const Hero = () => {
             <span><Counter value={visitorCount} /> Profile Visits</span>
           </div>
         </div>
-        <div className="flex items-center gap-6 mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight flex-1">
-            Hi, I'm <span className="text-accent">Duggirala Mouli</span>. <br />
-            I build intelligent <br />
-            software systems.
-          </h1>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="relative w-28 h-28 md:w-44 md:h-44 shrink-0 group"
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-accent to-blue-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-            
-            {/* Gradient Border Wrapper */}
-            <div className="relative w-full h-full rounded-full p-1.5 bg-gradient-to-tr from-accent via-blue-400 to-emerald-400 shadow-2xl shadow-accent/20">
-              <div className="w-full h-full rounded-full overflow-hidden border-4 border-white bg-slate-100">
-                <img 
-                  src="/mouli.jpg" 
-                  alt="Duggirala Mouli" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://picsum.photos/seed/mouli/400/400";
-                  }}
-                />
-              </div>
-            </div>
-          </motion.div>
-        </div>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
+          Hi, I'm <span className="text-accent">Duggirala Mouli</span>. <br />
+          I build intelligent <br />
+          software systems.
+        </h1>
         <p className="text-lg text-muted mb-10 max-w-2xl">
           B.Tech Computer Science student at Velagapudi Ramakrishna Siddhartha Engineering College. 
           Passionate about Competitive Programming, Artificial Intelligence, and Java Web Technologies.
@@ -973,9 +947,7 @@ const Contact = () => {
       
       if (response.ok) {
         setFormState('sent');
-        toast.success("Message sent successfully! I'll get back to you soon.", {
-          icon: "🚀"
-        });
+        toast.success("Message sent successfully! I'll get back to you soon.");
         form.reset();
         setTimeout(() => setFormState('idle'), 5000);
       } else {
@@ -1061,9 +1033,14 @@ const Contact = () => {
             </div>
             <button 
               disabled={formState === 'sending' || formState === 'sent'}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 group/btn cursor-pointer"
             >
-              {formState === 'idle' && <><Send size={18} /> Send Message</>}
+              {formState === 'idle' && (
+                <div className="flex items-center gap-2">
+                  Send Message
+                  <span className="opacity-0 group-hover/btn:opacity-100 transition-opacity animate-bounce">👋</span>
+                </div>
+              )}
               {formState === 'sending' && "Sending..."}
               {formState === 'sent' && "Message Sent!"}
               {formState === 'error' && "Error! Try Again"}
