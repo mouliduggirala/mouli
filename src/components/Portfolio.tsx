@@ -340,22 +340,56 @@ const Hero = () => {
             <span><Counter value={visitorCount} /> Profile Visits</span>
           </div>
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
-          Hi, I'm <span className="text-accent">Duggirala Mouli</span>. <br />
-          I build intelligent <br />
-          software systems.
-        </h1>
+        <div className="flex items-center gap-6 mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight flex-1">
+            Hi, I'm <span className="text-accent">Duggirala Mouli</span>. <br />
+            I build intelligent <br />
+            software systems.
+          </h1>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="relative w-28 h-28 md:w-44 md:h-44 shrink-0 group"
+          >
+            {/* Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-accent to-blue-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+            
+            {/* Gradient Border Wrapper */}
+            <div className="relative w-full h-full rounded-full p-1.5 bg-gradient-to-tr from-accent via-blue-400 to-emerald-400 shadow-2xl shadow-accent/20">
+              <div className="w-full h-full rounded-full overflow-hidden border-4 border-white bg-slate-100">
+                <img 
+                  src="/mouli.jpg" 
+                  alt="Duggirala Mouli" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://picsum.photos/seed/mouli/400/400";
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
         <p className="text-lg text-muted mb-10 max-w-2xl">
           B.Tech Computer Science student at Velagapudi Ramakrishna Siddhartha Engineering College. 
           Passionate about Competitive Programming, Artificial Intelligence, and Java Web Technologies.
         </p>
         <div className="flex flex-wrap gap-4">
-          <a 
-            href="#projects" 
+          <button 
+            onClick={() => {
+              const element = document.getElementById('projects');
+              if (element) {
+                const offset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+              }
+            }}
             className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
           >
             View My Work <ChevronRight size={16} />
-          </a>
+          </button>
           <a 
             href="/resume.pdf" 
             download="Mouli_Duggirala_Resume.pdf"
