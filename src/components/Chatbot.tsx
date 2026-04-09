@@ -22,7 +22,7 @@ const LogoIcon = ({ size = "sm" }: { size?: "sm" | "md" }) => {
 };
 
 const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isLeadCaptured, setIsLeadCaptured] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! I'm Mouli's AI assistant. How can I help you with information about his profile, skills, or projects?" },
@@ -159,8 +159,8 @@ const Chatbot = () => {
                 >
                   <div
                     className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${m.role === "user"
-                        ? "bg-primary text-white rounded-tr-none shadow-md shadow-primary/10"
-                        : "bg-white text-slate-700 border border-slate-100 rounded-tl-none shadow-sm"
+                      ? "bg-primary text-white rounded-tr-none shadow-md shadow-primary/10"
+                      : "bg-white text-slate-700 border border-slate-100 rounded-tl-none shadow-sm"
                       }`}
                   >
                     {m.content}

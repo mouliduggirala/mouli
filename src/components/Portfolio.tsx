@@ -37,7 +37,21 @@ import {
   Menu,
   X
 } from "lucide-react";
-import { SiLeetcode } from "react-icons/si";
+import {
+  SiAngular,
+  SiCss,
+  SiGit,
+  SiGithub,
+  SiHtml5,
+  SiJavascript,
+  SiLeetcode,
+  SiMysql,
+  SiOpenjdk,
+  SiPostman,
+  SiPython,
+  SiReact,
+  SiSpringboot,
+} from "react-icons/si";
 import { AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import Chatbot from "./Chatbot";
@@ -69,7 +83,7 @@ const GitHubIcon = ({ size = 24, className = "" }: { size?: number, className?: 
 );
 
 const Logo = () => (
-  <div className="flex items-center gap-2 group cursor-default">
+  <div className="flex items-center gap-2 group">
     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
       D
     </div>
@@ -200,7 +214,7 @@ const Navbar = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           whileHover={{ scale: 1.05 }}
-          className="cursor-default"
+          className="cursor-pointer"
           onClick={() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setIsMenuOpen(false);
@@ -397,7 +411,7 @@ const About = () => {
 };
 
 const Stats = () => {
-  const visitorCount = useVisitorCount();
+  const [cardView, setCardView] = useState<"problem" | "development">("problem");
 
   return (
     <section id="stats" className="section-padding">
@@ -407,21 +421,45 @@ const Stats = () => {
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-6 lg:gap-8">
-        {/* Visitor Stats */}
+        {/* Profile Cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-6 sm:p-8 rounded-3xl border border-slate-100 bg-white shadow-sm flex flex-col justify-center items-center text-center"
+          className="p-4 sm:p-5 rounded-3xl border border-slate-100 bg-white shadow-sm"
         >
-          <div className="p-4 rounded-2xl bg-accent/10 mb-6">
-            <Activity className="text-accent" size={32} />
+          <div className="flex gap-2 mb-4 w-full">
+            <button
+              onClick={() => setCardView("problem")}
+              className={`flex-1 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all border ${cardView === "problem"
+                ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200"
+                : "bg-white text-slate-500 border-slate-200"
+                }`}
+            >
+              Problem Solving
+            </button>
+            <button
+              onClick={() => setCardView("development")}
+              className={`flex-1 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all border ${cardView === "development"
+                ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-200"
+                : "bg-white text-slate-500 border-slate-200"
+                }`}
+            >
+              Development
+            </button>
           </div>
-          <h3 className="text-xl font-bold mb-2">Profile Visits</h3>
-          <p className="text-4xl font-bold text-primary mb-2">
-            <Counter value={visitorCount} />
-          </p>
-          <p className="text-sm text-muted">Total unique session views</p>
+
+          <motion.img
+            key={cardView}
+            initial={{ opacity: 0, rotateY: -90, scale: 0.96 }}
+            animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            src={cardView === "problem" ? "/codoliocard.png" : "/devCard.png"}
+            alt={cardView === "problem" ? "Codolio problem solving card" : "Development profile card"}
+            className="w-full h-auto rounded-2xl border border-slate-100"
+            style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+            loading="lazy"
+          />
         </motion.div>
 
         {/* Codolio Problem Solving Stats */}
@@ -441,49 +479,45 @@ const Stats = () => {
             <span className="text-sm font-mono text-slate-400">Problems Solved</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={1978} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Solved</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={2027} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Questions</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={1110} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">DSA</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={514} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Active Days</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={739} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Competitive</p>
-            </div>
-            <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={178} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Fundamentals</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={47} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Contests</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
               <div className="flex justify-between items-center text-sm mb-2">
-                <span className="text-muted font-medium">Platform Breakdown</span>
-                <span className="font-bold">All Coding Platforms</span>
+                <span className="text-muted font-medium">Contest Platforms</span>
+                <span className="font-bold">Contest Count</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
                 <motion.div
                   initial={{ width: 0 }}
-                  whileInView={{ width: '55%' }}
+                  whileInView={{ width: '72%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="h-full bg-emerald-500"
                 />
                 <motion.div
                   initial={{ width: 0 }}
-                  whileInView={{ width: '30%' }}
+                  whileInView={{ width: '26%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
                   className="h-full bg-orange-500"
                 />
                 <motion.div
                   initial={{ width: 0 }}
-                  whileInView={{ width: '15%' }}
+                  whileInView={{ width: '2%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
                   className="h-full bg-rose-500"
@@ -494,23 +528,11 @@ const Stats = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-4 border-t border-slate-50">
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <span className="text-xs font-bold text-slate-500">LeetCode</span>
-                <span className="text-sm font-bold text-primary">1089</span>
+                <span className="text-sm font-bold text-primary">34</span>
               </div>
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <span className="text-xs font-bold text-slate-500">CodeChef</span>
-                <span className="text-sm font-bold text-primary">735</span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                <span className="text-xs font-bold text-slate-500">Codeforces</span>
-                <span className="text-sm font-bold text-primary">4</span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                <span className="text-xs font-bold text-slate-500">HackerRank</span>
-                <span className="text-sm font-bold text-primary">114</span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-                <span className="text-xs font-bold text-slate-500">GeeksForGeeks</span>
-                <span className="text-sm font-bold text-primary">64</span>
+                <span className="text-sm font-bold text-primary">12</span>
               </div>
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <span className="text-xs font-bold text-slate-500">CodeStudio</span>
@@ -520,11 +542,11 @@ const Stats = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">LeetCode Rating</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">LeetCode Ranking</p>
                 <p className="text-sm font-bold text-primary">1353 <span className="text-xs text-slate-400 font-medium">(max 1524)</span></p>
               </div>
               <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">CodeChef Rating</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">CodeChef Ranking</p>
                 <p className="text-sm font-bold text-primary">1009 <span className="text-xs text-slate-400 font-medium">(max 1037)</span></p>
               </div>
             </div>
@@ -579,25 +601,25 @@ const Stats = () => {
 };
 
 const Skills = () => {
-  const skillIcons: Record<string, any> = {
-    "Java": Code2,
-    "Python": Terminal,
-    "JavaScript": Cpu,
-    "SQL": Database,
-    "DSA": Binary,
-    "OOP": Layers,
-    "Spring Boot": Server,
-    "REST APIs": Globe,
-    "ReactJS": Atom,
-    "Angular": Shield,
-    "HTML5": FileCode,
-    "CSS3": Palette,
-    "Machine Learning": Brain,
-    "NLP": MessageSquare,
-    "MySQL": Database,
-    "Git": GitBranch,
-    "GitHub": Github,
-    "Postman": Send
+  const skillMeta: Record<string, { icon: any; color: string }> = {
+    "Java": { icon: SiOpenjdk, color: "text-[#f89820]" },
+    "Python": { icon: SiPython, color: "text-[#3776AB]" },
+    "JavaScript": { icon: SiJavascript, color: "text-[#F7DF1E]" },
+    "SQL": { icon: Database, color: "text-[#1E40AF]" },
+    "DSA": { icon: Binary, color: "text-[#7C3AED]" },
+    "OOP": { icon: Layers, color: "text-[#6366F1]" },
+    "Spring Boot": { icon: SiSpringboot, color: "text-[#6DB33F]" },
+    "REST APIs": { icon: Globe, color: "text-[#0EA5E9]" },
+    "ReactJS": { icon: SiReact, color: "text-[#61DAFB]" },
+    "Angular": { icon: SiAngular, color: "text-[#DD0031]" },
+    "HTML5": { icon: SiHtml5, color: "text-[#E34F26]" },
+    "CSS3": { icon: SiCss, color: "text-[#1572B6]" },
+    "Machine Learning": { icon: Brain, color: "text-[#EC4899]" },
+    "NLP": { icon: MessageSquare, color: "text-[#8B5CF6]" },
+    "MySQL": { icon: SiMysql, color: "text-[#4479A1]" },
+    "Git": { icon: SiGit, color: "text-[#F05032]" },
+    "GitHub": { icon: SiGithub, color: "text-[#111827]" },
+    "Postman": { icon: SiPostman, color: "text-[#FF6C37]" }
   };
 
   const fullNames: Record<string, string> = {
@@ -645,11 +667,12 @@ const Skills = () => {
             <h3 className="text-xl font-bold mb-6">{cat.title}</h3>
             <div className="grid grid-cols-2 gap-3">
               {cat.skills.map(skill => {
-                const Icon = skillIcons[skill] || Code2;
+                const meta = skillMeta[skill];
+                const Icon = meta?.icon || Code2;
                 return (
                   <div key={skill} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 text-xs font-medium text-slate-600">
                     <div className="relative group/skill">
-                      <Icon size={14} className="text-accent cursor-help" />
+                      <Icon size={14} className={`${meta?.color || "text-accent"} cursor-help`} />
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[10px] rounded opacity-0 group-hover/skill:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-xl border border-slate-700">
                         {fullNames[skill] || skill}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
@@ -670,37 +693,37 @@ const Skills = () => {
 const Projects = () => {
   const projects = [
     {
-      title: "Agentic AI HR Optimizer",
+      title: "TalentAI Orchestrator",
       desc: "An intelligent HR automation system leveraging LangGraph and LLaMA 3 to streamline candidate evaluation and skill-gap analysis with high precision.",
       tech: ["LangGraph", "Groq", "Python", "React"],
       link: "https://github.com/mouli4401/ai-hr-agent"
     },
     {
-      title: "Vibrant Food Delivery Ecosystem",
+      title: "QuickBite Network",
       desc: "A full-featured food delivery platform with real-time tracking, optimized search, and a seamless checkout experience.",
       tech: ["ReactJS", "Redux", "Tailwind CSS"],
       link: "https://github.com/mouli4401"
     },
     {
-      title: "Enterprise Job Connect Portal",
+      title: "JobSphere Enterprise",
       desc: "A scalable recruitment platform built with Java Spring Boot, featuring advanced search filters and secure JWT authentication.",
       tech: ["Java", "Spring Boot", "MySQL", "JWT"],
       link: "https://github.com/mouli4401"
     },
     {
-      title: "E-Commerce Market Intelligence",
+      title: "PricePulse Analytics",
       desc: "Real-time competitor price monitoring tool that provides strategic market insights using advanced web scraping and data analysis.",
       tech: ["Python", "BeautifulSoup", "Flask"],
       link: "https://github.com/mouli4401"
     },
     {
-      title: "Shoreline Dynamics Monitor",
+      title: "CoastVision AI",
       desc: "AI-driven coastal erosion tracking system using satellite data to predict shoreline changes with 92% accuracy.",
       tech: ["Python", "ML", "GEE API"],
       link: "https://github.com/mouli4401"
     },
     {
-      title: "Neural Emotion Interpreter",
+      title: "EmotionX AI",
       desc: "A Brain-Computer Interface (BCI) project using EEG signals to accurately classify human emotions in real-time.",
       tech: ["Python", "Arduino", "Signal Processing"],
       link: "https://github.com/mouli4401"
@@ -1026,7 +1049,7 @@ const Contact = () => {
             </div>
             <button
               disabled={formState === 'sending' || formState === 'sent'}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 group/btn cursor-default"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 group/btn"
             >
               {formState === 'idle' && (
                 <div className="flex items-center gap-2">
@@ -1055,7 +1078,7 @@ const Footer = () => {
           <div className="text-left">
             <div
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="cursor-default w-fit hover:scale-105 transition-transform"
+              className="cursor-pointer w-fit hover:scale-105 transition-transform"
             >
               <Logo />
             </div>

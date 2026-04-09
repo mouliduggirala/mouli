@@ -18,6 +18,13 @@
     cursor: default;
   }
 
+  button,
+  [type="button"],
+  [type="submit"],
+  [type="reset"] {
+    cursor: pointer;
+  }
+
   body {
     @apply font-sans bg-white text-primary antialiased transition-colors duration-300;
   }
