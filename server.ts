@@ -4,6 +4,8 @@ import path from "path";
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 
+// Load local overrides first, then fall back to .env.
+dotenv.config({ path: ".env.local" });
 dotenv.config();
 
 async function startServer() {
@@ -45,16 +47,20 @@ STRICT RULES:
 `;
 
   app.post("/api/chat", async (req, res) => {
-    const { messages } = req.body;
+    const { messages } = req.body ?? {};
     const apiKey = process.env.GROQ_API_KEY;
+
+    if (!Array.isArray(messages)) {
+      return res.status(400).json({ error: "Invalid request payload. 'messages' must be an array." });
+    }
 
     if (!apiKey) {
       console.error("GROQ_API_KEY is missing from environment variables.");
-      return res.status(500).json({ error: "Groq API key not configured. Please add GROQ_API_KEY in Settings > Secrets." });
+      return res.status(500).json({ error: "Groq API key not configured. Add GROQ_API_KEY to .env.local." });
     }
 
     const trimmedKey = apiKey.trim();
-    
+
     try {
       const groq = new Groq({
         apiKey: trimmedKey,
@@ -88,14 +94,14 @@ STRICT RULES:
       res.json({ message: chatCompletion.choices[0]?.message?.content || "" });
     } catch (error: any) {
       console.error("Groq API Error:", error);
-      
+
       if (error?.status === 401) {
-        return res.status(401).json({ 
-          error: "Invalid API Key. Please check your GROQ_API_KEY in Settings > Secrets.",
-          details: error.message 
+        return res.status(401).json({
+          error: "Invalid API Key. Please check GROQ_API_KEY in .env.local.",
+          details: error.message
         });
       }
-      
+
       res.status(500).json({ error: error.message || "Failed to get response from AI." });
     }
   });

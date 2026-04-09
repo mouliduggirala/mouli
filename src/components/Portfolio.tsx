@@ -41,8 +41,6 @@ import { SiLeetcode } from "react-icons/si";
 import { AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import Chatbot from "./Chatbot";
-import { db } from "../firebase";
-import { doc, getDoc, setDoc, updateDoc, onSnapshot, increment, serverTimestamp } from "firebase/firestore";
 
 const LinkedInIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg
@@ -108,44 +106,23 @@ const Counter = ({ value }: { value: number }) => {
 
 const useVisitorCount = () => {
   const [count, setCount] = useState<number>(0);
-  const hasIncremented = useRef(false);
 
   useEffect(() => {
-    const visitorDoc = doc(db, "stats", "visitors");
+    const storageKey = "portfolio_profile_views";
+    const hasVisited = sessionStorage.getItem("visited") === "true";
 
-    // Listen for real-time updates
-    const unsubscribe = onSnapshot(visitorDoc, (docSnap) => {
-      if (docSnap.exists()) {
-        setCount(docSnap.data().count || 0);
-      }
-    });
+    const currentValue = Number.parseInt(localStorage.getItem(storageKey) ?? "0", 10);
+    const safeValue = Number.isFinite(currentValue) ? currentValue : 0;
 
-    // Increment count once per session
-    if (!hasIncremented.current && !sessionStorage.getItem("visited")) {
-      const incrementCount = async () => {
-        try {
-          const docSnap = await getDoc(visitorDoc);
-          if (docSnap.exists()) {
-            await updateDoc(visitorDoc, {
-              count: increment(1),
-              updatedAt: serverTimestamp()
-            });
-          } else {
-            await setDoc(visitorDoc, {
-              count: 1,
-              updatedAt: serverTimestamp()
-            });
-          }
-          sessionStorage.setItem("visited", "true");
-          hasIncremented.current = true;
-        } catch (error) {
-          console.error("Error updating visitor count:", error);
-        }
-      };
-      incrementCount();
+    if (!hasVisited) {
+      const next = safeValue + 1;
+      localStorage.setItem(storageKey, String(next));
+      sessionStorage.setItem("visited", "true");
+      setCount(next);
+      return;
     }
 
-    return () => unsubscribe();
+    setCount(safeValue);
   }, []);
 
   return count;
