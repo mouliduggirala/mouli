@@ -424,7 +424,7 @@ const Stats = () => {
           <p className="text-sm text-muted">Total unique session views</p>
         </motion.div>
 
-        {/* Profile Views Stats */}
+        {/* Codolio Problem Solving Stats */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -433,34 +433,38 @@ const Stats = () => {
         >
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-blue-50">
-                <Trophy className="text-blue-600" />
+              <div className="p-3 rounded-2xl bg-amber-50">
+                <Trophy className="text-amber-600" />
               </div>
-              <h3 className="text-xl font-bold">Profile Views</h3>
+              <h3 className="text-xl font-bold">Codolio Profile</h3>
             </div>
-            <span className="text-sm font-mono text-slate-400">Live Tracker</span>
+            <span className="text-sm font-mono text-slate-400">Problems Solved</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={2027} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Views</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={1978} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Solved</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={514} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Returning Visitors</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={1110} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">DSA</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
-              <p className="text-2xl font-bold text-primary"><Counter value={112} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Weekly Average</p>
+              <p className="text-2xl font-bold text-primary"><Counter value={739} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Competitive</p>
+            </div>
+            <div className="text-center p-4 rounded-2xl bg-slate-50">
+              <p className="text-2xl font-bold text-primary"><Counter value={178} /></p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Fundamentals</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
               <div className="flex justify-between items-center text-sm mb-2">
-                <span className="text-muted font-medium">Engagement Progress</span>
-                <span className="font-bold"><Counter value={1150} /> Interactions</span>
+                <span className="text-muted font-medium">Platform Breakdown</span>
+                <span className="font-bold">All Coding Platforms</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
                 <motion.div
@@ -472,14 +476,14 @@ const Stats = () => {
                 />
                 <motion.div
                   initial={{ width: 0 }}
-                  whileInView={{ width: '40%' }}
+                  whileInView={{ width: '30%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
                   className="h-full bg-orange-500"
                 />
                 <motion.div
                   initial={{ width: 0 }}
-                  whileInView={{ width: '5%' }}
+                  whileInView={{ width: '15%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
                   className="h-full bg-rose-500"
@@ -487,12 +491,42 @@ const Stats = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-slate-50">
-              <div className="text-[#0f172a] hover:scale-110 transition-transform cursor-help" title="Traffic"><Activity size={20} /></div>
-              <div className="text-[#10b981] hover:scale-110 transition-transform cursor-help" title="Audience"><User size={20} /></div>
-              <div className="text-[#0ea5e9] hover:scale-110 transition-transform cursor-help" title="Growth"><ArrowUp size={20} /></div>
-              <div className="text-[#f59e0b] hover:scale-110 transition-transform cursor-help" title="Weekly"><Flame size={20} /></div>
-              <div className="text-[#6366f1] hover:scale-110 transition-transform cursor-help" title="Realtime"><Globe size={20} /></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-50">
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">LeetCode</span>
+                <span className="text-sm font-bold text-primary">1089</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">CodeChef</span>
+                <span className="text-sm font-bold text-primary">735</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">Codeforces</span>
+                <span className="text-sm font-bold text-primary">4</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">HackerRank</span>
+                <span className="text-sm font-bold text-primary">114</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">GeeksForGeeks</span>
+                <span className="text-sm font-bold text-primary">64</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                <span className="text-xs font-bold text-slate-500">CodeStudio</span>
+                <span className="text-sm font-bold text-primary">1</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">LeetCode Rating</p>
+                <p className="text-sm font-bold text-primary">1353 <span className="text-xs text-slate-400 font-medium">(max 1524)</span></p>
+              </div>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">CodeChef Rating</p>
+                <p className="text-sm font-bold text-primary">1009 <span className="text-xs text-slate-400 font-medium">(max 1037)</span></p>
+              </div>
             </div>
           </div>
         </motion.div>
