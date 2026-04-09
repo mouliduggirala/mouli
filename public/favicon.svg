@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DM logo favicon">
+  <rect width="64" height="64" rx="14" fill="#ffffff"/>
+  <rect x="7" y="10" width="28" height="44" rx="8" fill="#0f172a"/>
+  <rect x="29" y="10" width="28" height="44" rx="8" fill="#10b981"/>
+  <text x="21" y="40" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">D</text>
+  <text x="43" y="40" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff">M</text>
+</svg>

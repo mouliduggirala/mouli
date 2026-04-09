@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 
 const Logo = () => (
-  <div className="flex items-center gap-2 group cursor-pointer">
+  <div className="flex items-center gap-2 group cursor-default">
     <div className="w-12 h-12 bg-[#0f172a] rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-[#0f172a]/20">
       D
     </div>
@@ -32,14 +32,14 @@ const Loader = () => {
       >
         <Logo />
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         initial={{ width: 0 }}
         animate={{ width: "120px" }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="h-1 bg-[#10b981] rounded-full mt-8"
       />
-      
+
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

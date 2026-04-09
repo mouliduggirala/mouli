@@ -3,6 +3,21 @@ build/
 dist/
 coverage/
 .DS_Store
+Thumbs.db
 *.log
 .env*
 !.env.example
+
+# Tooling and local caches
+.vite/
+.firebase/
+.vercel/
+.netlify/
+.cache/
+
+# Editor/OS files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp

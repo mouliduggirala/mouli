@@ -1,19 +1,19 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { motion, useInView, animate } from "motion/react";
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
-  Code2, 
-  User, 
-  Briefcase, 
-  GraduationCap, 
-  Send, 
-  ChevronRight, 
-  Trophy, 
-  Activity, 
-  Flame, 
+import {
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
+  Code2,
+  User,
+  Briefcase,
+  GraduationCap,
+  Send,
+  ChevronRight,
+  Trophy,
+  Activity,
+  Flame,
   Award,
   MapPin,
   Phone,
@@ -37,6 +37,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { SiLeetcode } from "react-icons/si";
 import { AnimatePresence } from "motion/react";
 import { toast } from "react-toastify";
 import Chatbot from "./Chatbot";
@@ -44,46 +45,33 @@ import { db } from "../firebase";
 import { doc, getDoc, setDoc, updateDoc, onSnapshot, increment, serverTimestamp } from "firebase/firestore";
 
 const LinkedInIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="currentColor" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
   </svg>
 );
 
 const GitHubIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="currentColor" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-  </svg>
-);
-
-const LeetCodeIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="currentColor" 
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M13.483 0a1.374 1.374 0 0 0-.961.414l-9.77 9.77a1.373 1.373 0 0 0-.001 1.94l9.77 9.77a1.373 1.373 0 0 0 1.942.001l9.77-9.77a1.373 1.373 0 0 0 0-1.94l-9.77-9.77a1.374 1.374 0 0 0-.95zm0 2.748l7.022 7.022-7.022 7.022-7.022 7.022 7.022-7.022zM2.857 15.247a1.373 1.373 0 0 0-1.372 1.372v3.024a1.373 1.373 0 0 0 1.372 1.372h3.024a1.373 1.373 0 0 0 1.372-1.372v-3.024a1.373 1.373 0 0 0-1.372-1.372H2.857z"/>
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
   </svg>
 );
 
 const Logo = () => (
-  <div className="flex items-center gap-2 group cursor-pointer">
+  <div className="flex items-center gap-2 group cursor-default">
     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
       D
     </div>
@@ -190,7 +178,7 @@ const Navbar = () => {
           }
         }
       }
-      
+
       if (window.scrollY < 100) setActiveSection('hero');
     };
 
@@ -226,17 +214,16 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 transition-all duration-300 border rounded-2xl ${
-      isScrolled 
-        ? "py-3 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-200/40 border-slate-200" 
-        : "py-4 bg-white/50 backdrop-blur-md border-slate-200/50"
-    }`}>
+    <nav className={`fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 transition-all duration-300 border rounded-2xl ${isScrolled
+      ? "py-3 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-200/40 border-slate-200"
+      : "py-4 bg-white/50 backdrop-blur-md border-slate-200/50"
+      }`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           whileHover={{ scale: 1.05 }}
-          className="cursor-pointer"
+          className="cursor-default"
           onClick={() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setIsMenuOpen(false);
@@ -244,19 +231,18 @@ const Navbar = () => {
         >
           <Logo />
         </motion.div>
-        
+
         <div className="flex items-center gap-8">
           {/* Desktop Nav */}
           <div className="hidden md:flex gap-1 text-sm font-medium">
             {navItems.map((item) => (
-              <button 
-                key={item.id} 
+              <button
+                key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-full transition-colors ${
-                  activeSection === item.id 
-                    ? "text-accent" 
-                    : "text-slate-600 hover:text-accent"
-                }`}
+                className={`relative px-4 py-2 rounded-full transition-colors ${activeSection === item.id
+                  ? "text-accent"
+                  : "text-slate-600 hover:text-accent"
+                  }`}
               >
                 {item.name}
                 {activeSection === item.id && (
@@ -271,7 +257,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             className="md:hidden p-3 -mr-2 text-slate-600 hover:text-accent transition-colors relative z-[60]"
             onClick={(e) => {
               e.stopPropagation();
@@ -295,14 +281,13 @@ const Navbar = () => {
           >
             <div className="flex flex-col p-4 gap-2">
               {navItems.map((item) => (
-                <button 
-                  key={item.id} 
+                <button
+                  key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-4 py-4 rounded-xl text-sm font-bold transition-all text-left flex items-center justify-between group ${
-                    activeSection === item.id 
-                      ? "bg-accent/10 text-accent" 
-                      : "text-slate-600 hover:bg-slate-50"
-                  }`}
+                  className={`px-4 py-4 rounded-xl text-sm font-bold transition-all text-left flex items-center justify-between group ${activeSection === item.id
+                    ? "bg-accent/10 text-accent"
+                    : "text-slate-600 hover:bg-slate-50"
+                    }`}
                 >
                   {item.name}
                   <ChevronRight size={14} className={`transition-transform ${activeSection === item.id ? 'translate-x-0 opacity-100' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}`} />
@@ -337,7 +322,7 @@ const Hero = () => {
           </span>
           <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold tracking-widest uppercase">
             <Activity size={12} />
-            <span><Counter value={visitorCount} /> Profile Visits</span>
+            <span><Counter value={visitorCount} /> Profile Views</span>
           </div>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
@@ -346,11 +331,11 @@ const Hero = () => {
           software systems.
         </h1>
         <p className="text-lg text-muted mb-10 max-w-2xl">
-          B.Tech Computer Science student at Velagapudi Ramakrishna Siddhartha Engineering College. 
+          B.Tech Computer Science student at Velagapudi Ramakrishna Siddhartha Engineering College.
           Passionate about Competitive Programming, Artificial Intelligence, and Java Web Technologies.
         </p>
         <div className="flex flex-wrap gap-4">
-          <button 
+          <button
             onClick={() => {
               const element = document.getElementById('projects');
               if (element) {
@@ -364,8 +349,8 @@ const Hero = () => {
           >
             View My Work <ChevronRight size={16} />
           </button>
-          <a 
-            href="/resume.pdf" 
+          <a
+            href="/resume.pdf"
             download="Mouli_Duggirala_Resume.pdf"
             className="bg-white border border-slate-200 text-primary px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm"
           >
@@ -379,7 +364,7 @@ const Hero = () => {
               <LinkedInIcon size={24} />
             </a>
             <a href="https://leetcode.com/u/mouli881/" target="_blank" className="p-2 hover:scale-110 transition-transform text-[#FFA116]">
-              <LeetCodeIcon size={24} />
+              <SiLeetcode size={24} />
             </a>
           </div>
         </div>
@@ -443,10 +428,10 @@ const Stats = () => {
         <h2 className="heading-lg mb-4">Portfolio Statistics</h2>
         <p className="text-muted">My unified problem-solving journey and portfolio reach.</p>
       </div>
-      
+
       <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
         {/* Visitor Stats */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -462,8 +447,8 @@ const Stats = () => {
           <p className="text-sm text-muted">Total unique session views</p>
         </motion.div>
 
-        {/* Codolio Stats */}
-        <motion.div 
+        {/* Profile Views Stats */}
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -474,69 +459,69 @@ const Stats = () => {
               <div className="p-3 rounded-2xl bg-blue-50">
                 <Trophy className="text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold">Codolio Profile</h3>
+              <h3 className="text-xl font-bold">Profile Views</h3>
             </div>
-            <span className="text-sm font-mono text-slate-400">@mouli02</span>
+            <span className="text-sm font-mono text-slate-400">Live Tracker</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8">
             <div className="text-center p-4 rounded-2xl bg-slate-50">
               <p className="text-2xl font-bold text-primary"><Counter value={2027} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Solved</p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Views</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
               <p className="text-2xl font-bold text-primary"><Counter value={514} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Active Days</p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Returning Visitors</p>
             </div>
             <div className="text-center p-4 rounded-2xl bg-slate-50">
               <p className="text-2xl font-bold text-primary"><Counter value={112} /></p>
-              <p className="text-xs text-muted uppercase tracking-wider font-bold">Max Streak</p>
+              <p className="text-xs text-muted uppercase tracking-wider font-bold">Weekly Average</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
               <div className="flex justify-between items-center text-sm mb-2">
-                <span className="text-muted font-medium">DSA Progress</span>
-                <span className="font-bold"><Counter value={1150} /> Solved</span>
+                <span className="text-muted font-medium">Engagement Progress</span>
+                <span className="font-bold"><Counter value={1150} /> Interactions</span>
               </div>
               <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: '55%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="h-full bg-emerald-500" 
+                  className="h-full bg-emerald-500"
                 />
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: '40%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-                  className="h-full bg-orange-500" 
+                  className="h-full bg-orange-500"
                 />
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: '5%' }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
-                  className="h-full bg-rose-500" 
+                  className="h-full bg-rose-500"
                 />
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-slate-50">
-              <div className="text-[#2EC866] hover:scale-110 transition-transform cursor-help" title="HackerRank"><Activity size={20} /></div>
-              <div className="text-[#2F8D46] hover:scale-110 transition-transform cursor-help" title="GeeksforGeeks"><Code2 size={20} /></div>
-              <div className="text-[#FFA116] hover:scale-110 transition-transform cursor-help" title="LeetCode"><LeetCodeIcon size={20} /></div>
-              <div className="text-[#5B4638] hover:scale-110 transition-transform cursor-help" title="CodeChef"><Flame size={20} /></div>
-              <div className="text-[#323759] hover:scale-110 transition-transform cursor-help" title="HackerEarth"><Terminal size={20} /></div>
+              <div className="text-[#0f172a] hover:scale-110 transition-transform cursor-help" title="Traffic"><Activity size={20} /></div>
+              <div className="text-[#10b981] hover:scale-110 transition-transform cursor-help" title="Audience"><User size={20} /></div>
+              <div className="text-[#0ea5e9] hover:scale-110 transition-transform cursor-help" title="Growth"><ArrowUp size={20} /></div>
+              <div className="text-[#f59e0b] hover:scale-110 transition-transform cursor-help" title="Weekly"><Flame size={20} /></div>
+              <div className="text-[#6366f1] hover:scale-110 transition-transform cursor-help" title="Realtime"><Globe size={20} /></div>
             </div>
           </div>
         </motion.div>
 
         {/* GitHub Stats */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -567,8 +552,8 @@ const Stats = () => {
             <div className="text-center">
               <Activity className="mx-auto text-slate-300 mb-2" size={32} />
               <p className="text-sm text-slate-400">Consistent growth in open source.</p>
-              <a 
-                href="https://github.com/mouli4401" 
+              <a
+                href="https://github.com/mouli4401"
                 target="_blank"
                 className="mt-4 inline-flex items-center gap-2 text-accent font-bold hover:underline"
               >
@@ -836,9 +821,9 @@ const Experience = () => {
                     <p className="text-xs text-slate-500 font-medium mb-2">{exp.company}</p>
                     <p className="text-[11px] text-muted leading-relaxed mb-3">{exp.desc}</p>
                     {exp.link && (
-                      <a 
-                        href={exp.link} 
-                        target="_blank" 
+                      <a
+                        href={exp.link}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-accent font-bold text-[10px] hover:underline"
                       >
@@ -923,10 +908,10 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
-    
+
     const form = e.currentTarget;
     const formData = new FormData(form);
-    
+
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -935,7 +920,7 @@ const Contact = () => {
     }
 
     setFormState('sending');
-    
+
     try {
       const response = await fetch('https://formspree.io/f/xaqpvdyk', {
         method: 'POST',
@@ -944,7 +929,7 @@ const Contact = () => {
           'Accept': 'application/json'
         }
       });
-      
+
       if (response.ok) {
         setFormState('sent');
         toast.success("Message sent successfully! I'll get back to you soon.");
@@ -996,44 +981,41 @@ const Contact = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-slate-400">Name</label>
-                <input 
-                  name="name" 
-                  type="text" 
-                  className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none transition-all ${
-                    errors.name ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
-                  }`} 
-                  placeholder="Your Name" 
+                <input
+                  name="name"
+                  type="text"
+                  className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none transition-all ${errors.name ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
+                    }`}
+                  placeholder="Your Name"
                 />
                 {errors.name && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.name}</p>}
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest text-slate-400">Email</label>
-                <input 
-                  name="email" 
-                  type="email" 
-                  className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none transition-all ${
-                    errors.email ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
-                  }`} 
-                  placeholder="your@email.com" 
+                <input
+                  name="email"
+                  type="email"
+                  className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none transition-all ${errors.email ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
+                    }`}
+                  placeholder="your@email.com"
                 />
                 {errors.email && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.email}</p>}
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-slate-400">Message</label>
-              <textarea 
-                name="message" 
-                rows={4} 
-                className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none resize-none transition-all ${
-                  errors.message ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
-                }`} 
+              <textarea
+                name="message"
+                rows={4}
+                className={`w-full bg-white border rounded-2xl px-6 py-4 focus:ring-2 focus:ring-accent outline-none resize-none transition-all ${errors.message ? 'border-red-500 ring-1 ring-red-500' : 'border-transparent'
+                  }`}
                 placeholder="Let's discuss opportunities..."
               ></textarea>
               {errors.message && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.message}</p>}
             </div>
-            <button 
+            <button
               disabled={formState === 'sending' || formState === 'sent'}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 group/btn cursor-pointer"
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50 shadow-lg shadow-primary/20 group/btn cursor-default"
             >
               {formState === 'idle' && (
                 <div className="flex items-center gap-2">
@@ -1060,9 +1042,9 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8 items-center">
           <div className="text-left">
-            <div 
+            <div
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="cursor-pointer w-fit hover:scale-105 transition-transform"
+              className="cursor-default w-fit hover:scale-105 transition-transform"
             >
               <Logo />
             </div>
@@ -1070,7 +1052,7 @@ const Footer = () => {
               Building intelligent software systems with a focus on AI and Java technologies.
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center gap-4">
             <h4 className="font-bold text-sm uppercase tracking-widest text-slate-400">Connect</h4>
             <div className="flex gap-6">
@@ -1081,7 +1063,7 @@ const Footer = () => {
                 <LinkedInIcon size={20} />
               </a>
               <a href="https://leetcode.com/u/mouli881/" target="_blank" className="p-2 rounded-xl bg-white shadow-sm hover:scale-110 hover:shadow-md transition-all text-[#FFA116]">
-                <LeetCodeIcon size={20} />
+                <SiLeetcode size={20} />
               </a>
               <a href="mailto:mouliduggirala02@gmail.com" className="p-2 rounded-xl bg-white shadow-sm hover:scale-110 hover:shadow-md transition-all text-[#EA4335]">
                 <Mail size={20} />
@@ -1090,7 +1072,7 @@ const Footer = () => {
           </div>
 
           <div className="md:text-right flex flex-col md:items-end gap-2">
-            <button 
+            <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-accent hover:text-white text-slate-600 rounded-full text-xs font-bold w-fit transition-all mb-2"
             >
@@ -1099,7 +1081,7 @@ const Footer = () => {
             </button>
             <div className="flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-xs font-bold w-fit">
               <Activity size={14} />
-              <span><Counter value={visitorCount} /> Profile Viewers</span>
+              <span><Counter value={visitorCount} /> Profile Views</span>
             </div>
             <p className="text-sm text-slate-400 font-medium">
               © {new Date().getFullYear()} Duggirala Mouli.
@@ -1154,7 +1136,7 @@ const AcademicJourney = () => {
           </h2>
           <p className="text-muted">A timeline of my growth at Velagapudi Ramakrishna Siddhartha Engineering College.</p>
         </div>
-        
+
         <div className="grid grid-cols-1 gap-4">
           {journey.map((item, i) => (
             <motion.div
@@ -1233,9 +1215,9 @@ const Certifications = () => {
                     <p className="text-[11px] text-muted font-medium">{cert.issuer}</p>
                   </div>
                 </div>
-                <a 
-                  href={cert.link} 
-                  target="_blank" 
+                <a
+                  href={cert.link}
+                  target="_blank"
                   className="p-2 rounded-lg bg-slate-50 text-slate-400 hover:bg-accent hover:text-white transition-all shrink-0 ml-2"
                 >
                   <ExternalLink size={16} />
