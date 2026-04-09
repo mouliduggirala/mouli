@@ -192,10 +192,10 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 transition-all duration-300 border rounded-2xl ${isScrolled
-      ? "py-3 bg-white/90 backdrop-blur-xl shadow-2xl shadow-slate-200/40 border-slate-200"
-      : "py-4 bg-white/50 backdrop-blur-md border-slate-200/50"
+      ? "py-3 bg-white/95 backdrop-blur-xl shadow-2xl shadow-slate-200/40 border-slate-200"
+      : "py-4 bg-white/70 backdrop-blur-md border-slate-200/50"
       }`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -216,16 +216,16 @@ const Navbar = () => {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative px-4 py-2 rounded-full transition-colors ${activeSection === item.id
-                  ? "text-accent"
-                  : "text-slate-600 hover:text-accent"
+                className={`relative px-4 py-2 rounded-full transition-all duration-200 ${activeSection === item.id
+                  ? "text-white bg-accent shadow-lg shadow-accent/20 scale-105"
+                  : "text-slate-600 hover:text-accent hover:bg-slate-50"
                   }`}
               >
                 {item.name}
                 {activeSection === item.id && (
                   <motion.div
                     layoutId="activeNav"
-                    className="absolute inset-0 bg-accent/10 rounded-full -z-10"
+                    className="absolute inset-0 -z-10 rounded-full bg-accent"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -256,14 +256,14 @@ const Navbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden overflow-hidden bg-white/98 backdrop-blur-2xl border-t border-slate-100 rounded-b-2xl shadow-xl"
           >
-            <div className="flex flex-col p-4 gap-2">
+            <div className="flex flex-col p-4 gap-2 max-h-[70vh] overflow-y-auto">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-4 py-4 rounded-xl text-sm font-bold transition-all text-left flex items-center justify-between group ${activeSection === item.id
-                    ? "bg-accent/10 text-accent"
-                    : "text-slate-600 hover:bg-slate-50"
+                  className={`px-4 py-4 rounded-2xl text-sm font-bold transition-all text-left flex items-center justify-between group border ${activeSection === item.id
+                    ? "bg-accent text-white border-accent shadow-lg shadow-accent/20"
+                    : "text-slate-600 hover:bg-slate-50 border-transparent"
                     }`}
                 >
                   {item.name}
@@ -282,7 +282,7 @@ const Hero = () => {
   const visitorCount = useVisitorCount();
 
   return (
-    <section className="section-padding pt-64 min-h-screen flex flex-col justify-center relative overflow-hidden">
+    <section className="section-padding pt-36 sm:pt-44 md:pt-64 min-h-screen flex flex-col justify-center relative overflow-hidden">
       {/* Background Orbs */}
       <div className="absolute top-1/4 -left-20 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-700" />
@@ -293,7 +293,7 @@ const Hero = () => {
         transition={{ duration: 0.6 }}
         className="max-w-4xl relative z-10"
       >
-        <div className="flex flex-wrap items-center gap-4 mb-6">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6">
           <span className="inline-block py-1 px-3 rounded-full bg-accent/10 text-accent text-[10px] font-bold tracking-widest uppercase">
             AI & Java Full Stack Developer
           </span>
@@ -302,16 +302,16 @@ const Hero = () => {
             <span><Counter value={visitorCount} /> Profile Views</span>
           </div>
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-6 sm:mb-8 leading-tight">
           Hi, I'm <span className="text-accent">Duggirala Mouli</span>. <br />
           I build intelligent <br />
           software systems.
         </h1>
-        <p className="text-lg text-muted mb-10 max-w-2xl">
+        <p className="text-sm sm:text-base md:text-lg text-muted mb-8 sm:mb-10 max-w-2xl">
           B.Tech Computer Science student at Velagapudi Ramakrishna Siddhartha Engineering College.
           Passionate about Competitive Programming, Artificial Intelligence, and Java Web Technologies.
         </p>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
           <button
             onClick={() => {
               const element = document.getElementById('projects');
@@ -322,18 +322,18 @@ const Hero = () => {
                 window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
               }
             }}
-            className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+            className="bg-primary text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
           >
             View My Work <ChevronRight size={16} />
           </button>
           <a
             href="/resume.pdf"
             download="Mouli_Duggirala_Resume.pdf"
-            className="bg-white border border-slate-200 text-primary px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm"
+            className="bg-white border border-slate-200 text-primary px-5 py-2.5 rounded-full text-sm font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm"
           >
             Download Resume <ExternalLink size={16} />
           </a>
-          <div className="flex gap-4 items-center px-4">
+          <div className="flex gap-4 items-center justify-center px-0 sm:px-4 pt-1 sm:pt-0">
             <a href="https://github.com/mouli4401" target="_blank" className="p-2 hover:scale-110 transition-transform text-slate-900">
               <GitHubIcon size={24} />
             </a>
@@ -368,7 +368,7 @@ const About = () => {
           <p className="text-muted mb-8">
             From building an AI Health Assistant to a highly scalable Java Job Portal, I strive to create robust applications. I'm actively engaged in competitive programming, having solved over 600 DSA problems on LeetCode.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div className="flex gap-4">
               <div className="p-3 rounded-2xl bg-white shadow-sm h-fit">
                 <GraduationCap className="text-accent" />
@@ -401,18 +401,18 @@ const Stats = () => {
 
   return (
     <section id="stats" className="section-padding">
-      <div className="max-w-7xl mx-auto text-center mb-16">
+      <div className="max-w-7xl mx-auto text-center mb-12 sm:mb-16">
         <h2 className="heading-lg mb-4">Portfolio Statistics</h2>
-        <p className="text-muted">My unified problem-solving journey and portfolio reach.</p>
+        <p className="text-muted px-2 sm:px-0">My unified problem-solving journey and portfolio reach.</p>
       </div>
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Visitor Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="p-8 rounded-3xl border border-slate-100 bg-white shadow-sm flex flex-col justify-center items-center text-center"
+          className="p-6 sm:p-8 rounded-3xl border border-slate-100 bg-white shadow-sm flex flex-col justify-center items-center text-center"
         >
           <div className="p-4 rounded-2xl bg-accent/10 mb-6">
             <Activity className="text-accent" size={32} />
@@ -429,7 +429,7 @@ const Stats = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="p-8 rounded-3xl border border-slate-100 bg-white shadow-sm"
+          className="p-6 sm:p-8 rounded-3xl border border-slate-100 bg-white shadow-sm"
         >
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
@@ -441,7 +441,7 @@ const Stats = () => {
             <span className="text-sm font-mono text-slate-400">Problems Solved</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="text-center p-4 rounded-2xl bg-slate-50">
               <p className="text-2xl font-bold text-primary"><Counter value={1978} /></p>
               <p className="text-xs text-muted uppercase tracking-wider font-bold">Total Solved</p>
@@ -491,7 +491,7 @@ const Stats = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-4 border-t border-slate-50">
               <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                 <span className="text-xs font-bold text-slate-500">LeetCode</span>
                 <span className="text-sm font-bold text-primary">1089</span>
@@ -518,7 +518,7 @@ const Stats = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">LeetCode Rating</p>
                 <p className="text-sm font-bold text-primary">1353 <span className="text-xs text-slate-400 font-medium">(max 1524)</span></p>
