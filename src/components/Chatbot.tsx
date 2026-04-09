@@ -79,7 +79,24 @@ const Chatbot = () => {
         }),
       });
 
-      const data = await response.json();
+      const raw = await response.text();
+      let data: any = {};
+
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        const errorText = data?.error || `Request failed with status ${response.status}`;
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `Error: ${errorText}` },
+        ]);
+        return;
+      }
+
       if (data.error) {
         setMessages((prev) => [
           ...prev,
@@ -104,7 +121,7 @@ const Chatbot = () => {
     <div className="fixed bottom-6 right-6 z-[100]">
       <AnimatePresence>
         {isOpen && (
-            <motion.div
+          <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -141,11 +158,10 @@ const Chatbot = () => {
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
-                      m.role === "user"
+                    className={`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${m.role === "user"
                         ? "bg-primary text-white rounded-tr-none shadow-md shadow-primary/10"
                         : "bg-white text-slate-700 border border-slate-100 rounded-tl-none shadow-sm"
-                    }`}
+                      }`}
                   >
                     {m.content}
                   </div>
@@ -220,7 +236,7 @@ const Chatbot = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {/* Tooltip */}
         {!isOpen && (
           <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-white border border-slate-100 rounded-xl shadow-xl text-[10px] font-bold text-primary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
