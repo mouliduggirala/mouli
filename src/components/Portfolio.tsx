@@ -1083,7 +1083,7 @@ const Footer = () => {
               <Logo />
             </div>
             <p className="mt-4 text-sm text-slate-400 max-w-xs">
-              Building intelligent software systems with a focus on AI and Java technologies.
+              Actually, I'm a fresher looking for entry-level roles.
             </p>
           </div>
 

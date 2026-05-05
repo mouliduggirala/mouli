@@ -22,7 +22,7 @@ const LogoIcon = ({ size = "sm" }: { size?: "sm" | "md" }) => {
 };
 
 const Chatbot = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isLeadCaptured, setIsLeadCaptured] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! I'm Mouli's AI assistant. How can I help you with information about his profile, skills, or projects?" },
